@@ -5,17 +5,30 @@ import Dropzone from 'react-dropzone';
 function App() {
   const [clusters, setClusters] = useState({});
   const [selectedForDeletion, setSelectedForDeletion] = useState([]);
+  const [directoryPath, setDirectoryPath] = useState('');
 
-  useEffect(() => {
-    getDuplicates();
-  }, []);
+  // useEffect(() => {
+  //   if (directoryPath) {
+  //     getDuplicates();
+  //   }
+  // }, [directoryPath]);
 
   const getDuplicates = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/group');
+      const response = await axios.get('http://localhost:5000/get_duplicates');
       setClusters(response.data);
     } catch (error) {
-      console.error('Error fetching clusters:', error);
+      console.error('Error fetching duplicates:', error);
+    }
+  };
+
+
+  const handleSetDirectory = async () => {
+    try {
+      await axios.post('http://localhost:5000/set_directory', { directory_path: directoryPath });
+      getDuplicates();
+    } catch (error) {
+      console.error('Error setting directory:', error);
     }
   };
 
@@ -61,6 +74,16 @@ function App() {
           </div>
         )}
       </Dropzone>
+
+      <input
+        type="text"
+        placeholder="Enter directory path"
+        value={directoryPath}
+        onChange={(e) => setDirectoryPath(e.target.value)}
+        style={{ width: '300px', marginRight: '10px' }}
+      />
+      <button onClick={handleSetDirectory}>Set Directory</button>
+    
       <button onClick={getDuplicates} style={{ margin: '20px' }}>Group Images</button>
       <div>
         {Object.keys(clusters).map(clusterKey => (
