@@ -6,27 +6,23 @@ function App() {
   const [clusters, setClusters] = useState({});
   const [selectedForDeletion, setSelectedForDeletion] = useState([]);
   const [directoryPath, setDirectoryPath] = useState('');
-
-  // useEffect(() => {
-  //   if (directoryPath) {
-  //     getDuplicates();
-  //   }
-  // }, [directoryPath]);
+  const [loading, setLoading] = useState(false);
 
   const getDuplicates = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/get_duplicates');
       setClusters(response.data);
     } catch (error) {
       console.error('Error fetching duplicates:', error);
     }
+    setLoading(false);
   };
 
 
   const handleSetDirectory = async () => {
     try {
       await axios.post('http://localhost:5000/set_directory', { directory_path: directoryPath });
-      getDuplicates();
     } catch (error) {
       console.error('Error setting directory:', error);
     }
@@ -85,6 +81,9 @@ function App() {
       <button onClick={handleSetDirectory}>Set Directory</button>
     
       <button onClick={getDuplicates} style={{ margin: '20px' }}>Group Images</button>
+      {loading ? (
+        <p>Loading...</p>  // Show loading sign
+      ) : (
       <div>
         {Object.keys(clusters).map(clusterKey => (
           <div key={clusterKey}>
@@ -107,6 +106,7 @@ function App() {
           </div>
         ))}
       </div>
+      )}
       {selectedForDeletion.length > 0 && (
         <button onClick={handleDeleteSelected}>Delete Selected</button>
       )}
