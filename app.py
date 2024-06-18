@@ -14,7 +14,6 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 
-
 @app.route('/upload', methods=['POST'])
 def upload_image():
     files = request.files.getlist('images')
@@ -26,13 +25,15 @@ def upload_image():
 @app.route('/get_duplicates', methods=['GET'])
 def get_duplicates():
     groups = find_duplicates(app.config['UPLOAD_FOLDER'])
-    print(groups)
+    # print(groups)
     return groups, 200
 
 
 @app.route('/images/<path:filename>', methods=['GET'])
 def serve_image(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    print("FILE")
+    print(filename)
+    return send_from_directory("", filename)
 
 
 # Endpoint to set the image directory

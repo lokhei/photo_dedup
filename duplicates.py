@@ -35,6 +35,10 @@ def find_duplicates(image_folder, similarity_threshold=0.9):
         img1 = image_paths[i]
         if img1 in seen:
             continue
+        
+        if img1 not in duplicates_dict:
+            duplicates_dict[img1] = [img1]
+        
         for j in range(i + 1, len(image_paths)):
             img2 = image_paths[j]
             if img2 in seen:
@@ -43,10 +47,7 @@ def find_duplicates(image_folder, similarity_threshold=0.9):
             features2 = features_dict[img2]
             similarity = cosine_similarity(features1, features2)[0][0]
             if similarity > similarity_threshold:
-                if img1 not in duplicates_dict:
-                    duplicates_dict[img1] = []
                 duplicates_dict[img1].append(img2)
                 seen.add(img2)
 
     return duplicates_dict
-

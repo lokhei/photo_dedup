@@ -12,6 +12,8 @@ function App() {
   const [currentCluster, setCurrentCluster] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+
+
   const getDuplicates = async () => {
     setLoading(true);
     try {
@@ -22,7 +24,6 @@ function App() {
     }
     setLoading(false);
   };
-
 
   const handleSetDirectory = async () => {
     try {
@@ -37,6 +38,8 @@ function App() {
     acceptedFiles.forEach(file => formData.append('images', file));
 
     try {
+      setDirectoryPath("uploads/");
+      handleSetDirectory();
       await axios.post('http://localhost:5000/upload', formData);
     } catch (error) {
       console.error('Error uploading images:', error);
@@ -63,7 +66,6 @@ function App() {
     }
   };
 
-
   const openImage = (imagePath, cluster) => {
     setCurrentCluster(cluster);
     setCurrentIndex(cluster.indexOf(imagePath));
@@ -81,7 +83,6 @@ function App() {
     const newIndex = (currentIndex - 1 + currentCluster.length) % currentCluster.length;
     setCurrentIndex(newIndex);
     setSelectedImage(currentCluster[newIndex]);
-    console.log("hi")
   };
 
   const showNextImage = (e) => {
@@ -90,7 +91,6 @@ function App() {
     setCurrentIndex(newIndex);
     setSelectedImage(currentCluster[newIndex]);
   };
-
 
   return (
     <div className="App">
@@ -125,7 +125,7 @@ function App() {
         <div>
           {Object.keys(clusters).map(clusterKey => (
             <div key={clusterKey}>
-              <h2>Group </h2>
+              <h2>Group {clusterKey}</h2>
               <div className="image-container">
                 {clusters[clusterKey].map(imagePath => (
                   <div
@@ -134,7 +134,7 @@ function App() {
                     className={`image-wrapper ${selectedForDeletion.includes(imagePath) ? 'selected' : ''}`}
                     onDoubleClick={() => openImage(imagePath, clusters[clusterKey])}
                   >
-                    <img src={`http://localhost:5000/${imagePath}`} alt="" className="image" />
+                    <img src={`http://localhost:5000/images/${imagePath}`} alt="" className="image" />
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ function App() {
         <div className="modal" onClick={closeImage}>
           <span className="close" onClick={closeImage}>&times;</span>
           <span className="arrow left-arrow" onClick={showPreviousImage}>&#10094;</span>
-          <img className="modal-content" src={`http://localhost:5000/${selectedImage}`} alt="" />
+          <img className="modal-content" src={`http://localhost:5000/images/${selectedImage}`} alt="" />
           <span className="arrow right-arrow" onClick={showNextImage}>&#10095;</span>
           <div className="caption">{selectedImage}</div>
         </div>
