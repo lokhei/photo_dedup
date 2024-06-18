@@ -11,13 +11,15 @@ function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentCluster, setCurrentCluster] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [similarityThreshold, setSimilarityThreshold] = useState(0.8); // Default threshold
+
 
 
 
   const getDuplicates = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/get_duplicates');
+      const response = await axios.get(`http://localhost:5000/get_duplicates?similarity_threshold=${similarityThreshold}`);
       setClusters(response.data);
     } catch (error) {
       console.error('Error fetching duplicates:', error);
@@ -92,6 +94,11 @@ function App() {
     setSelectedImage(currentCluster[newIndex]);
   };
 
+
+  const handleThresholdChange = async (e) => {
+    const newThreshold = e.target.value;
+    setSimilarityThreshold(newThreshold);
+  };
   return (
     <div className="App">
       <h1 className="title">Image Duplicates Deleter</h1>
@@ -115,6 +122,21 @@ function App() {
         <button onClick={handleSetDirectory} className="button">Set Directory</button>
         <button onClick={getDuplicates} className="button">Group Images</button>
       </div>
+
+      <div className="slider-container">
+        <label htmlFor="similarityThreshold">Similarity Threshold: {similarityThreshold}</label>
+        <input
+          type="range"
+          id="similarityThreshold"
+          min="0"
+          max="1"
+          step="0.01"
+          value={similarityThreshold}
+          onChange={handleThresholdChange}
+          className="slider"
+        />
+      </div>
+
 
       {loading ? (
         <div className="loading-container">

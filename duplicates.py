@@ -17,7 +17,7 @@ def extract_features(img_path, model):
     features = model.predict(img_data)
     return features
 
-def find_duplicates(image_folder, similarity_threshold=0.9):
+def find_duplicates(image_folder, similarity_threshold=0.8):
     features_dict = {}
     duplicates_dict = {}
     seen = set()
