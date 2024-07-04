@@ -2,6 +2,8 @@
 
 This project is a React-based web application for managing and deleting duplicate images. The application allows users to select images or a local directory, group duplicate images using the VGG16 model, and delete selected images.
 
+<img src="docs/duplicate_images.png" width=400>
+
 
 ## Installation
 ```bash
